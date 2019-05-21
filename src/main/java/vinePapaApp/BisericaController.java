@@ -1,36 +1,55 @@
 package vinePapaApp;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 
-@Controller
+@RestController
 public class BisericaController {
 
-    @Autowired
-    public BisericaRepository bisericaRepository;
+    List<Biserica> biserici = ArhivaDeBiserici.getBiserici();
 
-    @PostMapping("/adauga")
-    @ResponseStatus(HttpStatus.OK)
-    public void adaugaBiserica(@RequestBody Biserica biserica) {
-        System.out.println(biserica.nume);
-        bisericaRepository.save(biserica);
+    @GetMapping("/text/{month}")
+    public String getTextForAlexa(@PathVariable("month") String month) {
+
+        List<Biserica> bisericiForMonth = new ArrayList<>();
+
+        for (Biserica biserica : biserici) {
+            if (biserica.lunaDeVizita.equals(month)) {
+                bisericiForMonth.add(biserica);
+            }
+        }
+
+        String text;
+
+        if (bisericiForMonth.isEmpty()) {
+            text = "There are no churches for mr Pope on " + month;
+        } else {
+            text = "In " + month + " the pope is going to visit ";
+        }
+
+        for (Biserica biserica : bisericiForMonth) {
+            text = text + biserica.nume + " " + biserica.tipReligie + " church, ";
+        }
+
+        text += "\n";
+        return text;
     }
 
-    @GetMapping("/toateBisericile")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> getAllBiserica() {
-        String toate = bisericaRepository.findAll()
-                .stream()
-                .map(Object::toString)
-                .collect(Collectors.joining(" "));
-        return ResponseEntity.ok(toate);
+    @GetMapping("/biserici/{month}")
+    public List<Biserica> getBisericiForMonth(@PathVariable String month) {
+
+        List<Biserica> bisericiForMonth = new ArrayList<>();
+
+        for (Biserica biserica : biserici) {
+            if (biserica.lunaDeVizita.equals(month)) {
+                bisericiForMonth.add(biserica);
+            }
+        }
+
+        return bisericiForMonth;
     }
 }
