@@ -23,9 +23,15 @@ public class ArhivaDeBiserici {
         moscheeaConstanta.tipReligie = "muslim";
         moscheeaConstanta.lunaDeVizita = "July";
 
+        Biserica moscheeaTimisoara = new Biserica();
+        moscheeaTimisoara.nume = "Constanta mosque";
+        moscheeaTimisoara.tipReligie = "muslim";
+        moscheeaTimisoara.lunaDeVizita = "July";
+
         biserici.add(catedralaMantuiriiNeamului);
         biserici.add(sfMina);
         biserici.add(moscheeaConstanta);
+        biserici.add(moscheeaTimisoara);
 
         return biserici;
     }
